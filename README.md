@@ -838,9 +838,9 @@ For licensing inquiries: legal@maximus.com
 
 ## 🙏 Acknowledgments
 
-- **AWS Bedrock Team** for providing accessible generative AI models
-- **FAISS Contributors** for the efficient vector search library
-- **React Community** for the excellent frontend framework
+- AWS Bedrock Team for providing accessible generative AI models
+- FAISS Contributors for the efficient vector search library
+- React Community for the excellent frontend framework
 
 ---
 
