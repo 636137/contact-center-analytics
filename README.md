@@ -836,17 +836,6 @@ For licensing inquiries: legal@maximus.com
 
 ---
 
-## 📞 Support
-
-**For Maximus.com Authorized Users Only**
-
-- **Internal Support**: Contact IT Service Desk
-- **Technical Issues**: dev-support@maximus.com
-- **Security Concerns**: security@maximus.com
-- **Licensing Questions**: legal@maximus.com
-
----
-
 **Built with ❤️ by Maximus.com using AWS Serverless Technologies**
 
 **Copyright © 2026 Maximus.com. All Rights Reserved. Proprietary and Confidential.**
