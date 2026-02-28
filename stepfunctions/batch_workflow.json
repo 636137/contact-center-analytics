@@ -1,0 +1,45 @@
+{
+  "Comment": "Batch transcript generation workflow",
+  "StartAt": "GenerateScenarios",
+  "States": {
+    "GenerateScenarios": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:593804350786:function:generateScenarios",
+      "Next": "CreateBatches"
+    },
+    "CreateBatches": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:593804350786:function:createBatches",
+      "Next": "ProcessBatches"
+    },
+    "ProcessBatches": {
+      "Type": "Map",
+      "ItemsPath": "$.batches",
+      "MaxConcurrency": 10,
+      "Iterator": {
+        "StartAt": "ProcessTranscript",
+        "States": {
+          "ProcessTranscript": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:593804350786:function:transcriptProcessor",
+            "Retry": [
+              {
+                "ErrorEquals": ["States.ALL"],
+                "IntervalSeconds": 2,
+                "MaxAttempts": 3,
+                "BackoffRate": 2
+              }
+            ],
+            "Next": "IndexToOpenSearch"
+          },
+          "IndexToOpenSearch": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:593804350786:function:faissIndexer",
+            "End": true
+          }
+        }
+      },
+      "End": true
+    }
+  }
+}

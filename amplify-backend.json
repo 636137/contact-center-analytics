@@ -1,0 +1,97 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Contact Center Transcript Generator - Amplify Backend",
+  "Resources": {
+    "TranscriptGeneratorFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "transcriptGenerator",
+        "Runtime": "python3.11",
+        "Handler": "index.handler",
+        "Role": {"Fn::GetAtt": ["LambdaExecutionRole", "Arn"]},
+        "Code": {
+          "ZipFile": "# Code from amplify/backend/function/transcriptGenerator/index.py"
+        },
+        "Timeout": 300,
+        "MemorySize": 512
+      }
+    },
+    "LambdaExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Effect": "Allow",
+            "Principal": {"Service": "lambda.amazonaws.com"},
+            "Action": "sts:AssumeRole"
+          }]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Policies": [{
+          "PolicyName": "BedrockAccess",
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [{
+              "Effect": "Allow",
+              "Action": [
+                "bedrock:InvokeModel",
+                "bedrock:ListFoundationModels",
+                "bedrock:ListInferenceProfiles"
+              ],
+              "Resource": "*"
+            }]
+          }
+        }]
+      }
+    },
+    "TranscriptApi": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": "transcriptApi"
+      }
+    },
+    "TranscriptResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {"Ref": "TranscriptApi"},
+        "ParentId": {"Fn::GetAtt": ["TranscriptApi", "RootResourceId"]},
+        "PathPart": "transcript"
+      }
+    },
+    "TranscriptMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "RestApiId": {"Ref": "TranscriptApi"},
+        "ResourceId": {"Ref": "TranscriptResource"},
+        "HttpMethod": "POST",
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TranscriptGeneratorFunction.Arn}/invocations"
+          }
+        }
+      }
+    },
+    "LambdaApiPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {"Ref": "TranscriptGeneratorFunction"},
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${TranscriptApi}/*"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ApiEndpoint": {
+      "Value": {"Fn::Sub": "https://${TranscriptApi}.execute-api.${AWS::Region}.amazonaws.com/prod"}
+    }
+  }
+}
