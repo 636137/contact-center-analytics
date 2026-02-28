@@ -4,7 +4,11 @@
 
 [![AWS](https://img.shields.io/badge/AWS-Serverless-orange)](https://aws.amazon.com/)
 [![React](https://img.shields.io/badge/React-18-blue)](https://reactjs.org/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![License](https://img.shields.io/badge/License-Proprietary-red)](LICENSE)
+
+**Copyright © 2026 Maximus.com. All Rights Reserved.**
+
+> ⚠️ **PROPRIETARY SOFTWARE**: This software is the exclusive property of Maximus.com. No public license is granted. Unauthorized use, reproduction, or distribution is strictly prohibited.
 
 ![Platform Architecture](https://via.placeholder.com/800x400?text=Contact+Center+Analytics+Platform)
 
@@ -811,40 +815,24 @@ aws dynamodb update-table \
 
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these guidelines:
+**This is proprietary software owned by Maximus.com.**
 
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Code Standards
-
-- **JavaScript**: Follow Airbnb style guide, use ESLint
-- **Python**: Follow PEP 8, use Black formatter
-- **Commits**: Use conventional commits (feat:, fix:, docs:)
-
-### Testing
-
-```bash
-# Run frontend tests
-npm test
-
-# Run Lambda tests
-cd lambda && pytest
-
-# Run integration tests
-./run-integration-tests.sh
-```
+External contributions are not accepted. For internal development guidelines, contact the development team at dev@maximus.com.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+**Copyright © 2026 Maximus.com. All Rights Reserved.**
+
+This software is proprietary and confidential. No public license is granted. See the [LICENSE](LICENSE) file for complete terms and conditions.
+
+### Restrictions
+- ❌ No distribution, modification, or public use permitted
+- ❌ No open-source license granted
+- ✅ Authorized use by Maximus.com personnel only
+
+For licensing inquiries: legal@maximus.com
 
 ---
 
@@ -858,32 +846,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/636137/contact-center-analytics/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/636137/contact-center-analytics/discussions)
-- **Email**: support@example.com
+**For Maximus.com Authorized Users Only**
+
+- **Internal Support**: Contact IT Service Desk
+- **Technical Issues**: dev-support@maximus.com
+- **Security Concerns**: security@maximus.com
+- **Licensing Questions**: legal@maximus.com
 
 ---
 
-## 🗺️ Roadmap
+**Built with ❤️ by Maximus.com using AWS Serverless Technologies**
 
-### Q2 2026
-- [ ] Amazon Connect integration
-- [ ] Genesys Cloud adapter
-- [ ] Real-time streaming transcripts
-- [ ] Multi-language support
-
-### Q3 2026
-- [ ] QuickSight dashboard templates
-- [ ] Neptune graph database integration
-- [ ] Advanced analytics (topic modeling, entity extraction)
-- [ ] Mobile app (React Native)
-
-### Q4 2026
-- [ ] Multi-tenant support
-- [ ] Custom model fine-tuning
-- [ ] Automated quality scoring
-- [ ] Compliance monitoring (PCI, HIPAA)
-
----
-
-**Built with ❤️ using AWS Serverless Technologies**
+**Copyright © 2026 Maximus.com. All Rights Reserved. Proprietary and Confidential.**
