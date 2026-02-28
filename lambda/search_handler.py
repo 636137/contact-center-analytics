@@ -1,88 +1,57 @@
 import json
 import boto3
-import numpy as np
-import faiss
 
-dynamodb = boto3.resource('dynamodb')
-bedrock_client = boto3.client('bedrock-runtime')
-s3_client = boto3.client('s3')
-
-TABLE = dynamodb.Table('ContactCenterTranscripts')
-BUCKET = 'cc-transcripts-1772246760'
+lambda_client = boto3.client('lambda')
 
 def handler(event, context):
-    body = json.loads(event['body'])
-    query = body['query']
-    k = body.get('k', 10)
-    filters = body.get('filters', {})
-    
-    results = search_similar(query, k, filters)
-    
-    return {
-        'statusCode': 200,
-        'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps({'results': results})
-    }
-
-def search_similar(query_text, k, filters):
-    
-    # Generate query embedding
-    body_req = {"inputText": query_text, "dimensions": 768, "normalize": True}
-    response = bedrock_client.invoke_model(
-        modelId='amazon.titan-embed-text-v2:0',
-        body=json.dumps(body_req)
-    )
-    query_embedding = np.array(json.loads(response['Body'].read())['embedding'], dtype=np.float32)
-    
-    # Load FAISS index
+    """
+    API Gateway handler for search - delegates to vectorSearch Lambda
+    """
     try:
-        obj = s3_client.get_object(Bucket=BUCKET, Key='faiss/index.bin')
-        index = faiss.deserialize_index(obj['Body'].read())
+        # Parse request body
+        body = json.loads(event.get('body', '{}'))
+        query = body.get('query', '')
+        top_k = body.get('top_k', 10)
         
-        obj = s3_client.get_object(Bucket=BUCKET, Key='faiss/id_map.json')
-        id_map = json.loads(obj['Body'].read())
-    except:
-        return []
-    
-    # Search
-    distances, indices = index.search(query_embedding.reshape(1, -1), min(k * 3, len(id_map)))
-    
-    # Get metadata and apply filters
-    results = []
-    for idx, distance in zip(indices[0], distances[0]):
-        if idx >= len(id_map) or idx < 0:
-            continue
-        
-        transcript_id = id_map[int(idx)]
-        try:
-            item = TABLE.get_item(Key={'transcript_id': transcript_id})['Item']
-        except:
-            continue
-        
-        # Apply filters
-        if filters.get('minCsat') and item.get('csat', 0) < filters['minCsat']:
-            continue
-        if filters.get('fcr') is not None and item.get('fcr') != filters['fcr']:
-            continue
-        if filters.get('sentiment') and item.get('sentiment') != filters['sentiment']:
-            continue
-        
-        results.append({
-            'transcript_id': transcript_id,
-            'distance': float(distance),
-            'similarity': float(1 / (1 + distance)),
-            'metadata': {
-                'entity_name': item.get('entity_name'),
-                'scenario': item.get('scenario'),
-                'csat': item.get('csat'),
-                'fcr': item.get('fcr'),
-                'aht': item.get('aht'),
-                'sentiment': item.get('sentiment'),
-                'timestamp': item.get('timestamp')
+        if not query:
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'Query parameter required'})
             }
-        })
         
-        if len(results) >= k:
-            break
-    
-    return results
+        # Call vector search Lambda
+        response = lambda_client.invoke(
+            FunctionName='vectorSearch',
+            InvocationType='RequestResponse',
+            Payload=json.dumps({
+                'action': 'search',
+                'query': query,
+                'top_k': top_k
+            })
+        )
+        
+        result = json.loads(response['Payload'].read())
+        search_body = json.loads(result['body'])
+        
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps(search_body)
+        }
+        
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': str(e)})
+        }

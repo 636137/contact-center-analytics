@@ -3,7 +3,7 @@ import { post } from 'aws-amplify/api';
 import { signIn, signOut, getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
 import './App.css';
 import BatchGenerator from './BatchGenerator';
-import VectorSearch from './VectorSearch';
+import VectorSearch from './VectorSearch2';
 import TranscriptDisplay from './TranscriptDisplay';
 import AnalysisDisplay from './AnalysisDisplay';
 
