@@ -1,3 +1,9 @@
+## Proprietary Notice
+
+This code is proprietary to **Maximus**. **No public license is granted**. See [`NOTICE`](./NOTICE).
+
+---
+
 # Contact Center Analytics Platform
 
 > **A scalable, cost-optimized analytics platform for generating and analyzing synthetic contact center transcripts using Amazon Bedrock and AWS serverless architecture.**
