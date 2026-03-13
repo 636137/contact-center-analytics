@@ -6,6 +6,18 @@ This code is proprietary to **Maximus**. **No public license is granted**. See [
 
 # Contact Center Analytics Platform
 
+## Repository Layout
+
+- `frontend/`
+- `backend/`
+- `infra/`
+
+## Local vs Deploy
+
+- Local: see `docs/how-to.md`
+- Deploy: see `infra/`
+
+
 > **A scalable, cost-optimized analytics platform for generating and analyzing synthetic contact center transcripts using Amazon Bedrock and AWS serverless architecture.**
 
 [![AWS](https://img.shields.io/badge/AWS-Serverless-orange)](https://aws.amazon.com/)
